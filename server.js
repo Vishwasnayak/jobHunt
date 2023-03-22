@@ -36,13 +36,15 @@ dotenv.config();
 //middleware
 notFoundMiddleware
 
+
+
+app.use('/api/v1/auth',authRouter)
+app.use('/api/v1/jobs',authenticateServer,jobsRouter) //details shoudlbe be displayed in request header of dev tool thats why heading
+
 //when deploying
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
   });
-
-app.use('/api/v1/auth',authRouter)
-app.use('/api/v1/jobs',authenticateServer,jobsRouter) //details shoudlbe be displayed in request header of dev tool thats why heading
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
 

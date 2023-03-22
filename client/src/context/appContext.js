@@ -178,13 +178,13 @@ const AppProvider=({children}) =>{
 
      try {
       const {data}=await authFetch.get(url)
+      console.log("data in jobs ",data)
       const {jobs,totalJobs,numOfPages}=data
       dispatch({type:GET_JOBS_SUCCESS,
       payload:{jobs,totalJobs,numOfPages}
       })
 
      } catch (error) {
-      console.log(error.response)
       logoutUser()
      }
      clearAlert()
