@@ -12,23 +12,34 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import cookieParser from 'cookie-parser'
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
 
 const app=express()
 
 if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
   }
-    
+
+  //for deploying
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  app.use(express.static(path.resolve(__dirname, './client/build')));
+
 app.use(express.json())  //makes all post data into json
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 app.use(cookieParser());
 dotenv.config();
 
 //middleware
 notFoundMiddleware
 
-app.get('/',(req,res) =>{
-    res.send('Welcome')
-})
+//when deploying
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+  });
 
 app.use('/api/v1/auth',authRouter)
 app.use('/api/v1/jobs',authenticateServer,jobsRouter) //details shoudlbe be displayed in request header of dev tool thats why heading
